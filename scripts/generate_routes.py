@@ -1,4 +1,5 @@
 ﻿from pathlib import Path
+import time
 
 import matplotlib
 
@@ -23,7 +24,7 @@ LAT_MAX = 52.401965
 LON_MIN = 16.951101
 LON_MAX = 16.952410
 
-RANDOM_SEED = 22
+RANDOM_SEED = int(time.time())
 
 
 def clamp_position(lat, lon):
