@@ -1,4 +1,6 @@
 import generate_routes
+from pathlib import Path
+import os
 import pandas as pd
 from opensearchpy import OpenSearch
 from opensearchpy.helpers import bulk
@@ -9,9 +11,23 @@ import urllib3
 import warnings
 warnings.filterwarnings("ignore", category=urllib3.exceptions.InsecureRequestWarning)
 
+BASE_DIR = Path(__file__).resolve().parents[1]
+ENV_PATH = BASE_DIR / ".env"
+
+if ENV_PATH.exists():
+    for line in ENV_PATH.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip())
+
 client = OpenSearch(
-    hosts=['https://localhost:9200'],
-    http_auth=('admin', 'MojeSuperHaslo2026!'), # haslo tworzone w docker compose
+    hosts=["https://localhost:9200"],
+    http_auth=(
+        "admin",
+        os.getenv("OPENSEARCH_PASSWORD"),
+    ),
     use_ssl=True,
     verify_certs=False
 )
